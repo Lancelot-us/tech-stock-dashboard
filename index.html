@@ -41,6 +41,13 @@ body {
 
 /* Tables */
 .tbl-wrap { overflow-x:auto; border:1px solid #d0d7de; border-radius:8px; }
+/* Frozen first column */
+td.frozen, th.frozen {
+  position:sticky; left:0; z-index:4;
+  background:#fff;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.08);
+}
+th.top-row.frozen { z-index:5; background:#f6f8fa; box-shadow: 2px 0 5px rgba(0,0,0,0.08); }
 .scroll-table { max-height:80vh; overflow-y:auto; }
 table { width:100%; border-collapse:collapse; font-size:11px; }
 th { background:#f6f8fa; color:#656d76; font-weight:600; padding:6px 6px;
@@ -407,12 +414,12 @@ function buildThead(cols, sortKey, sortAsc) {
     if (g.label === null) {
       const isSort = g.firstCol.key === sortKey;
       const arrow = isSort ? (sortAsc ? '&#9650;' : '&#9660;') : '';
-      topHtml += '<th class="top-row no-group sortable" rowspan="2" onclick="handleSort(\'' + g.firstCol.key + '\')">' + g.firstCol.label + '<span style="font-size:9px;margin-left:2px;color:#0969da;">' + arrow + '</span></th>';
+      topHtml += '<th class="top-row no-group sortable frozen" rowspan="2" onclick="handleSort(\'' + g.firstCol.key + '\')">' + g.firstCol.label + '<span style="font-size:9px;margin-left:2px;color:#0969da;">' + arrow + '</span></th>';
     } else if (g.count === 1) {
       // Single-col group: rowspan=2, no sub-row cell
       const isSort = g.firstCol.key === sortKey;
       const arrow = isSort ? (sortAsc ? '&#9650;' : '&#9660;') : '';
-      topHtml += '<th class="top-row sortable" rowspan="2" onclick="handleSort(\'' + g.firstCol.key + '\')">' + g.label + '<span style="font-size:9px;margin-left:2px;color:#0969da;">' + arrow + '</span></th>';
+      topHtml += '<th class="top-row sortable frozen" rowspan="2" onclick="handleSort(\'' + g.firstCol.key + '\')">' + g.label + '<span style="font-size:9px;margin-left:2px;color:#0969da;">' + arrow + '</span></th>';
     } else {
       topHtml += '<th class="top-row" colspan="' + g.count + '">' + g.label + '</th>';
     }
@@ -454,7 +461,7 @@ function renderTable() {
       groups[s].push(d);
     });
     for (const [sector, items] of Object.entries(groups)) {
-      html += '<tr class="sector-group-row"><td colspan="' + cols.length + '">' + sector + ' (' + items.length + '家)</td></tr>';
+      html += '<tr class="sector-group-row"><td class="frozen" colspan="' + cols.length + '">' + sector + ' (' + items.length + '家)</td></tr>';
       items.forEach(d => {
         html += renderRow(d, cols, isFund);
       });
@@ -469,7 +476,7 @@ function renderTable() {
   if (sorted.length > 0) {
     html += '<tr class="avg-row">';
     cols.forEach(c => {
-      if (c.key === 'ticker') { html += '<td>板块均值</td>'; return; }
+      if (c.key === 'ticker') { html += '<td class="frozen">板块均值</td>'; return; }
       if (c.key === 'name' || c.key === 'sector' || c.key === 'fy' || c.key === 'last_earn' || c.key === 'disclosure_date') { html += '<td>-</td>'; return; }
       const vals = sorted.map(d => d[c.key]).filter(v => v !== null && v !== undefined);
       if (vals.length === 0) { html += '<td>-</td>'; return; }
@@ -505,7 +512,7 @@ function renderRow(d, cols, isFund) {
   let html = '<tr>';
   cols.forEach(c => {
     const val = d[c.key];
-    if (c.key === 'ticker') { html += '<td>' + d.ticker + '</td>'; return; }
+    if (c.key === 'ticker') { html += '<td class="frozen">' + d.ticker + '</td>'; return; }
     if (c.key === 'name') { html += '<td>' + (d.name || '-') + '</td>'; return; }
     if (c.key === 'sector') { html += '<td><span class="tag tag-' + bt + '">' + (d.sector || '-') + '</span></td>'; return; }
     const fmt = fmtVal(c.key, val, c);
