@@ -40,13 +40,14 @@ body {
 .filter-label { font-size:12px; color:#656d76; margin-right:4px; }
 
 /* Tables — use border-collapse:separate for mobile sticky support */
-.tbl-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid #d0d7de; border-radius:8px; }
-.scroll-table { max-height:80vh; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.tbl-scroll { overflow:auto; -webkit-overflow-scrolling:touch; max-height:80vh;
+  border:1px solid #d0d7de; border-radius:8px; }
 table { width:100%; border-collapse:separate; border-spacing:0; font-size:11px; }
 th { background:#f6f8fa; color:#656d76; font-weight:600; padding:6px 6px;
-  text-align:center; white-space:nowrap; position:-webkit-sticky; position:sticky; z-index:2; border-bottom:1px solid #d0d7de; }
-th.top-row { top:0; z-index:3; border-bottom:none; font-size:11px; color:#0969da; vertical-align:middle; }
-th.sub-row { top:23px; z-index:2; font-size:10px; }
+  text-align:center; white-space:nowrap; border-bottom:1px solid #d0d7de; }
+th.top-row { position:-webkit-sticky; position:sticky; top:0; z-index:3;
+  border-bottom:none; font-size:11px; color:#0969da; vertical-align:middle; }
+th.sub-row { position:-webkit-sticky; position:sticky; top:23px; z-index:2; font-size:10px; }
 th.sortable { cursor:pointer; text-align:left; }
 th.sortable:hover { color:#0969da; }
 th.no-group { text-align:left; }
@@ -57,11 +58,11 @@ tr:hover td { background:rgba(9,105,218,0.06) !important; }
 
 /* Frozen first column — -webkit-sticky for iOS Safari / WeChat browser */
 td.frozen, th.frozen {
-  position:-webkit-sticky; position:sticky; left:0; z-index:4;
+  position:-webkit-sticky; position:sticky; left:0; z-index:10;
   background:#fff; background-clip:padding-box;
   box-shadow: 2px 0 5px rgba(0,0,0,0.08);
 }
-th.top-row.frozen { z-index:5; background:#f6f8fa; box-shadow: 2px 0 5px rgba(0,0,0,0.08); }
+th.top-row.frozen { z-index:15; background:#f6f8fa; box-shadow: 2px 0 5px rgba(0,0,0,0.08); }
 
 /* Color coding — 涨红跌绿 (Chinese convention) */
 .up { color:#cf222e; font-weight:500; }
@@ -448,7 +449,7 @@ function renderTable() {
   });
 
   // Build HTML
-  let html = '<div class="tbl-wrap"><div class="scroll-table"><table>';
+  let html = '<div class="tbl-scroll"><table>';
   html += buildThead(cols, sortKey, sortAsc);
   html += '<tbody>';
 
@@ -504,7 +505,7 @@ function renderTable() {
     html += '</tr>';
   }
 
-  html += '</tbody></table></div></div>';
+  html += '</tbody></table></div>';
   document.getElementById('tableContainer').innerHTML = html;
 }
 
